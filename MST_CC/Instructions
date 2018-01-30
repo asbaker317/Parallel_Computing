@@ -1,0 +1,60 @@
+
+Set the path to ESSENS directory in the Makefile
+
+Compile The Codes
+make all
+make cE
+make tEx
+
+Create RMAT File using generator code
+
+Delete Duplicate Edges
+awk '{if($1< $2) print $1" " $2; else print $2" "$1 }' RMAT18_all.txt| sort -n -k1 -k2 |uniq  > tmp
+mv tmp RMAT18ER
+
+Set Edge weights from 0 to 100
+awk '{print $1 " " $2 " " int(rand()*100)}' RMAT18ER > tmp
+mv tmp RMAT18ER
+
+
+
+Then Create the MST Tree and the Remaining Graph
+./tEx.out <filename> <starts with 1 or 0>
+
+Example: ./tEx.out /Users/alexbaker1/Desktop/MST_CC/test_graph 1
+
+this will create three files
+Graphall.txt (Original file, starting from 0, undirected)
+GraphC.txt  (the certificate files, MST/BFS)
+Graphdiff.txt  (remaining edges, not in certificate)
+
+===================================
+
+Create set of changed Edges
+./cE.out <filename> <number of edges> <maximum weight of new edges> <Percentage of inserted edges (0 to 100)>
+Example: ./cE.out /Users/alexbaker1/Desktop/MST_CC/test_graph 500 100 80 > /Users/alexbaker1/Desktop/MST_CC/changedtest_graph
+
+Sort the edges for faster run—Optional
+sort -n -k1 <filename> > output
+Example: sort -n -k1 /Users/alexbaker1/Desktop/MST_CC/changedca-GrQc > /Users/alexbaker1/Desktop/MST_CC/changedtest_graphS
+
+===================================
+Compile
+In file modifyWT.hpp 
+uncomment either Insert_Delete_MST.hp (for MST update) or Insert_Delete_ConC.hpp (for Connected Component Update)
+
+========================
+Run the update
+./a.out
+SEVEN inputs required. 
+First: filename without tree. 
+Second: Graph Certificate. 
+Third: List of Edges to be Updated. 
+Fourth: Upper Bound on Weight 
+Fifth: number of nodes. 
+Sixth: Size of batch. (number of changed edges processed at a go)
+Seventh: number of threads
+
+Example:./a.out /Users/alexbaker1/Desktop/MST_CC/Graphdiff.txt /Users/alexbaker1/Desktop/MST_CC/GraphC.txt /Users/alexbaker1/Desktop/MST_CC/changedtest_graphS 100 8 1 1
+
+
